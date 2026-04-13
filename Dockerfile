@@ -7,6 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+# THE FIX: Hard-cap Node.js memory usage to 4GB so it cannot trigger the OOM killer
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
 # ==========================================
