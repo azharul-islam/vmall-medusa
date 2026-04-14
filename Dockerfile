@@ -15,9 +15,12 @@ RUN npm ci --no-audit --no-fund
 # 4. Copy all source code
 COPY . .
 
-# 5. Build the Medusa app and Admin UI safely (Without production flag!)
+# 5. Build the Medusa app and Admin UI safely 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
+
+# THE BUG FIX: Manually copy the Admin UI to where the server expects it
+RUN cp -r .medusa/server/public /app/public
 
 # 6. NOW set environment to production for runtime
 ENV NODE_ENV=production
