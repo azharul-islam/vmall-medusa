@@ -27,6 +27,5 @@ RUN chown -R node:node /app
 USER node
 
 EXPOSE 9000
-
 # Run migrations and start the server
 CMD ["sh", "-c", "npx medusa db:migrate && npm run start"]
