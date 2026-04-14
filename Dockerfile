@@ -1,46 +1,32 @@
-# ==========================================
-# STAGE 1: The Builder
-# ==========================================
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
+
+# 1. Copy package files
 COPY package*.json ./
-# THE FIX: Force native C++ compilers to use only 1 CPU core
-ENV JOBS=1
-ENV MAKEFLAGS="-j 1"
+
+# 2. Throttle C++ compilers to protect Hetzner RAM
+ENV JOBS=2
+ENV MAKEFLAGS="-j 2"
+
+# 3. Install ALL dependencies (keeps the TypeScript tools needed for the CLI)
 RUN npm ci --no-audit --no-fund
+
+# 4. Copy all source code
 COPY . .
-# THE FIX: Hard-cap Node.js memory usage to 4GB so it cannot trigger the OOM killer
+
+# 5. Set environment to production for framework optimizations
+ENV NODE_ENV=production
+
+# 6. Build the Medusa app and Admin UI safely
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
-# ==========================================
-# STAGE 2: The Production Runner
-# ==========================================
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-ENV NODE_ENV=production
-
-# THE FIX: Copy the package files FROM the builder stage instead of the local machine.
-# This forces Docker BuildKit to wait for Stage 1 to completely finish before starting Stage 2.
-COPY --from=builder /app/package*.json ./
-
-# THE MISSING PIECE: Throttle the compilers in Stage 2 as well!
-ENV JOBS=1
-ENV MAKEFLAGS="-j 1"
-
-# Run optimized install for production only
-RUN npm ci --omit=dev --no-audit --no-fund
-
-COPY --from=builder /app/.medusa ./.medusa
-COPY --from=builder /app/build* ./build
-COPY --from=builder /app/medusa-config.* ./
-
-# ==========================================
-# Security & Execution
-# ==========================================
+# 7. Security & Execution
 RUN chown -R node:node /app
 USER node
+
 EXPOSE 9000
+
+# Run migrations and start the server
 CMD ["sh", "-c", "npx medusa db:migrate && npm run start"]
