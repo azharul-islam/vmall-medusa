@@ -5,6 +5,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 COPY package*.json ./
+# THE FIX: Force native C++ compilers to use only 1 CPU core
+ENV JOBS=1
 RUN npm ci
 COPY . .
 # THE FIX: Hard-cap Node.js memory usage to 4GB so it cannot trigger the OOM killer
