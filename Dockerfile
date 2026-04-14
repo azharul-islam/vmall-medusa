@@ -9,23 +9,24 @@ COPY package*.json ./
 ENV JOBS=2
 ENV MAKEFLAGS="-j 2"
 
-# 3. Install ALL dependencies (keeps the TypeScript tools needed for the CLI)
+# 3. Install ALL dependencies 
 RUN npm ci --no-audit --no-fund
 
 # 4. Copy all source code
 COPY . .
 
-# 5. Set environment to production for framework optimizations
-ENV NODE_ENV=production
-
-# 6. Build the Medusa app and Admin UI safely
+# 5. Build the Medusa app and Admin UI safely (Without production flag!)
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
+
+# 6. NOW set environment to production for runtime
+ENV NODE_ENV=production
 
 # 7. Security & Execution
 RUN chown -R node:node /app
 USER node
 
 EXPOSE 9000
+
 # Run migrations and start the server
 CMD ["sh", "-c", "npx medusa db:migrate && npm run start"]
