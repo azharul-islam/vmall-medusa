@@ -26,8 +26,12 @@ ENV NODE_ENV=production
 # This forces Docker BuildKit to wait for Stage 1 to completely finish before starting Stage 2.
 COPY --from=builder /app/package*.json ./
 
-# Now this will run safely on its own, avoiding the memory spike
-RUN npm ci --omit=dev
+# THE MISSING PIECE: Throttle the compilers in Stage 2 as well!
+ENV JOBS=1
+ENV MAKEFLAGS="-j 1"
+
+# Run optimized install for production only
+RUN npm ci --omit=dev --no-audit --no-fund
 
 COPY --from=builder /app/.medusa ./.medusa
 COPY --from=builder /app/build* ./build
