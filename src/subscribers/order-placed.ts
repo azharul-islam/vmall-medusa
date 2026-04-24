@@ -1,5 +1,5 @@
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework"
-import { ContainerRegistrationKeys, Modules, type LinkModuleContainer } from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 const MARKETPLACE_MODULE = "marketplace"
 
 export default async function orderPlacedHandler({
@@ -8,7 +8,7 @@ export default async function orderPlacedHandler({
 }: SubscriberArgs<{ id: string }>) {
   const logger = container.resolve("logger")
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
-  const link = container.resolve<LinkModuleContainer>(Modules.LINK)
+  const link = container.resolve(ContainerRegistrationKeys.LINK)
 
   logger.info(`Processing order.placed event for order: ${data.id}`)
 
