@@ -32,4 +32,4 @@ USER node
 EXPOSE 9000
 
 # Run migrations and start the server
-CMD ["sh", "-c", "npx medusa db:migrate && npm run start"]
+CMD ["sh", "-c", "npx medusa db:migrate --execute-all-links && npm run start"]
