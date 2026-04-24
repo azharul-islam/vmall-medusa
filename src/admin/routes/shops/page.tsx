@@ -80,7 +80,7 @@ const ShopsPage = () => {
       return response
     },
     queryKey: ["shops", limit, offset, searchValue],
-    keepPreviousData: true,
+    placeholderData: (previousData: any) => previousData,
   })
 
   // Create shop mutation
@@ -230,7 +230,7 @@ const ShopsPage = () => {
     description: string
     logo: string
     banner: string
-    status: string
+    status: "pending" | "active" | "suspended"
     commission_rate: number
   }>({
     name: "",
@@ -242,7 +242,7 @@ const ShopsPage = () => {
     commission_rate: 0.1,
   })
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({})
 
   const resetForm = () => {
     setFormData({
@@ -456,7 +456,7 @@ const ShopsPage = () => {
                     <Select
                       value={formData.status}
                       onValueChange={(value) =>
-                        setFormData((prev) => ({ ...prev, status: value }))
+                        setFormData((prev) => ({ ...prev, status: value as "pending" | "active" | "suspended" }))
                       }
                     >
                       <Select.Trigger>

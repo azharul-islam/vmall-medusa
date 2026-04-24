@@ -1,0 +1,21 @@
+html.vendor-user aside div.px-3:has(a[href="/orders"]) {
+  display: none;
+}
+html.vendor-user aside div.px-3:has(a[href="/products"]) {
+  display: none;
+}
+html.vendor-user aside div.px-3:has(a[href="/inventory"]) {
+  display: none;
+}
+html.vendor-user aside div.px-3:has(a[href="/customers"]) {
+  display: none;
+}
+html.vendor-user aside div.px-3:has(a[href="/promotions"]) {
+  display: none;
+}
+html.vendor-user aside div.px-3:has(a[href="/price-lists"]) {
+  display: none;
+}
+html.vendor-user aside div.px-3:has(a[href="/settings"]) {
+  display: none;
+}

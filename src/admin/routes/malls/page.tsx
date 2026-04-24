@@ -77,7 +77,7 @@ const MallsPage = () => {
       return response
     },
     queryKey: ["malls", limit, offset, searchValue],
-    keepPreviousData: true,
+    placeholderData: (previousData: any) => previousData,
   })
 
   // Create mall mutation
@@ -218,7 +218,7 @@ const MallsPage = () => {
     address: string
     latitude?: number
     longitude?: number
-    status: string
+    status: "active" | "inactive" | "coming_soon"
   }>({
     name: "",
     handle: "",
@@ -227,7 +227,7 @@ const MallsPage = () => {
     status: "active",
   })
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({})
 
   const handleSubmit = () => {
     const newErrors: Record<string, string> = {}
@@ -322,7 +322,7 @@ const MallsPage = () => {
                     <Input
                       value={formData.name}
                       onChange={(e) => handleNameChange(e.target.value)}
-                      placeholder="e.g., Dubai Mall"
+                      placeholder="e.g., Mall of Qatar"
                     />
                     {errors.name && (
                       <Text size="small" className="text-ui-fg-error">
@@ -345,7 +345,7 @@ const MallsPage = () => {
                         }))
                         setErrors((prev) => ({ ...prev, handle: undefined }))
                       }}
-                      placeholder="dubai-mall"
+                      placeholder="mall-of-qatar"
                     />
                     {errors.handle && (
                       <Text size="small" className="text-ui-fg-error">
@@ -428,7 +428,7 @@ const MallsPage = () => {
                     <Select
                       value={formData.status}
                       onValueChange={(value) =>
-                        setFormData((prev) => ({ ...prev, status: value }))
+                        setFormData((prev) => ({ ...prev, status: value as "active" | "inactive" | "coming_soon" }))
                       }
                     >
                       <Select.Trigger>
