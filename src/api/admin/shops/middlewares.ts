@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 
 export const CreateShopSchema = z.object({
   name: z.string().min(1),
@@ -24,8 +25,11 @@ export const UpdateShopSchema = z.object({
 
 export type UpdateShopSchema = z.infer<typeof UpdateShopSchema>
 
-export const GetShopsSchema = z.object({
-  status: z.enum(["pending", "active", "suspended"]).optional(),
-})
+export const GetShopsSchema = createFindParams().merge(
+  z.object({
+    status: z.enum(["pending", "active", "suspended"]).optional(),
+    q: z.string().optional(),
+  })
+)
 
 export type GetShopsSchema = z.infer<typeof GetShopsSchema>

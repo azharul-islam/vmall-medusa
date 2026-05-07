@@ -7,11 +7,15 @@ export async function GET(
 ) {
   const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
 
+  const { q } = req.validatedQuery
+
+  const filters: Record<string, any> = { status: "active" }
+  if (q) filters.q = q
+
   const [malls, count] = await marketplaceService.listAndCountMalls(
-    { status: "active" },
+    filters,
     {
-      take: req.queryConfig.pagination.take,
-      skip: req.queryConfig.pagination.skip,
+      ...req.queryConfig.pagination,
       order: { created_at: "DESC" },
     }
   )

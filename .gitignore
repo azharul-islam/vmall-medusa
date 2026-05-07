@@ -11,6 +11,13 @@ coverage
 
 !src/**
 
+# Python scraper
+.venv/
+__pycache__/
+*.pyc
+scripts/scraper/output/
+scripts/scraper/*.json
+
 ./tsconfig.tsbuildinfo
 medusa-db.sql
 build

@@ -9,22 +9,23 @@ export async function GET(
 ) {
   const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
 
-  const limit = Math.min(parseInt(req.query.limit as string) || 20, 100)
-  const offset = parseInt(req.query.offset as string) || 0
-  const status = req.query.status as string
+  const { q, status } = req.validatedQuery
 
   const filters: Record<string, any> = {}
-  if (status) {
-    filters.status = status
-  }
+  if (status) filters.status = status
+  if (q) filters.q = q
 
   const [shops, count] = await marketplaceService.listAndCountShops(filters, {
-    take: limit,
-    skip: offset,
+    ...req.queryConfig.pagination,
     order: { created_at: "DESC" },
   })
 
-  res.json({ shops, count, limit, offset })
+  res.json({
+    shops,
+    count,
+    limit: req.queryConfig.pagination.take,
+    offset: req.queryConfig.pagination.skip,
+  })
 }
 
 export async function POST(

@@ -23,5 +23,24 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/marketplace",
     },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/file-s3",
+            id: "s3",
+            options: {
+              file_url: process.env.S3_FILE_URL,
+              access_key_id: process.env.S3_ACCESS_KEY_ID,
+              secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+              region: "auto", // Required for Cloudflare R2
+              bucket: process.env.S3_BUCKET,
+              endpoint: process.env.S3_ENDPOINT,
+            },
+          },
+        ],
+      },
+    },
   ]
 })

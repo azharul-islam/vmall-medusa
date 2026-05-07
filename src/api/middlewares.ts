@@ -127,7 +127,14 @@ export default defineMiddlewares({
     {
       matcher: "/admin/malls",
       method: "GET",
-      middlewares: [adminAuth],
+      middlewares: [
+        adminAuth,
+        validateAndTransformQuery(GetMallsSchema, {
+          defaults: ["id", "name", "handle", "status", "address"],
+          isList: true,
+          defaultLimit: 15,
+        }),
+      ],
     },
     {
       matcher: "/admin/malls",
@@ -178,7 +185,14 @@ export default defineMiddlewares({
     {
       matcher: "/admin/shops",
       method: "GET",
-      middlewares: [adminAuth],
+      middlewares: [
+        adminAuth,
+        validateAndTransformQuery(GetShopsSchema, {
+          defaults: ["id", "name", "handle", "status", "logo"],
+          isList: true,
+          defaultLimit: 15,
+        }),
+      ],
     },
     {
       matcher: "/admin/shops",
